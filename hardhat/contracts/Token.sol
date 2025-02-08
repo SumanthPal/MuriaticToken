@@ -28,6 +28,8 @@ contract MuriaticToken {
     }
 
     function approve(address _spender, uint256 _value) public returns (bool) {
+        require(_spender != address(0), "Cannot approve zero address");
+
         allowance[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
         return true;
