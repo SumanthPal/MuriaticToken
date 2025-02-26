@@ -35,6 +35,7 @@ contract MuriaticToken is IERC20 {
     function balanceOf(address account) external view override returns (uint256) {
         return _balances[account];
     }
+    
 
     function transfer(address recipient, uint256 amount) external override returns (bool) {
         require(_balances[msg.sender] >= amount, "Insufficient balance");
