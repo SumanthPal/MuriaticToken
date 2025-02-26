@@ -22,6 +22,14 @@ async function main() {
         await staking.waitForDeployment();
         const stakingAddress = await staking.getAddress();
         console.log("Staking deployed to:", stakingAddress);
+
+        // Deploy Lock
+        const Lock = await ethers.getContractFactory("Lock");
+        const unlockTime = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7; // 1 week from now
+        const lock = await Lock.deploy(unlockTime, { value: ethers.parseEther("1") }); // Lock 1 Ether for 1 week
+        await lock.waitForDeployment();
+        const lockAddress = await lock.getAddress();
+        console.log("Lock contract deployed to:", lockAddress);
         
     } catch (error) {
         console.error("Deployment failed:", error);
