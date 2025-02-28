@@ -31,6 +31,16 @@ async function main() {
         const lockAddress = await lock.getAddress();
         console.log("Lock contract deployed to:", lockAddress);
         
+        const recipient = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"; // Change this to the address you want to fund
+        console.log(`Sending 1 ETH to ${recipient}...`);
+        const tx = await deployer.sendTransaction({
+            to: recipient,
+            value: ethers.parseEther("1"), // Sending 1 ETH
+        });
+
+        await tx.wait();
+        console.log(`✅ 1 ETH sent to ${recipient}`);
+
     } catch (error) {
         console.error("Deployment failed:", error);
         process.exit(1);
