@@ -3,6 +3,7 @@ import { Web3Provider } from '../context/Web3Context';
 import ConnectButton from '../components/ConnectButton';
 import TokenInfo from '@/components/TokenInfo';
 import TransferForm from '../components/TransferForm';
+import StakingPanel from '@/components/StakingPanel';
 
 
 export default function Home() {
@@ -23,6 +24,9 @@ export default function Home() {
         </div>
         <div>
           <TransferForm />
+        </div>
+        <div>
+          <StakingPanel />
         </div>
       </main>
     </Web3Provider>

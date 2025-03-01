@@ -2,6 +2,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import TokenAbi from '../abis/Token.json';
+import StakingAbi from '../abis/Staking.json';
+
 
 interface Web3ContextType {
     account: string | null;
@@ -11,6 +13,7 @@ interface Web3ContextType {
     connect: () => Promise<void>;
     disconnect: () => void;
     isConnected: boolean;
+    stakingContract: ethers.Contract | null;
 }
 
 const Web3Context = createContext<Web3ContextType>({    
@@ -21,6 +24,7 @@ const Web3Context = createContext<Web3ContextType>({
     connect: async () => {},
     disconnect: () => {},
     isConnected: false,
+    stakingContract: null,
 });
 
 export const useWeb3 = () => useContext(Web3Context);
@@ -31,6 +35,8 @@ export const Web3Provider: React.FC<{ children: React.ReactNode}> = ({ children}
     const [provider, setProvider] = useState<ethers.BrowserProvider | ethers.JsonRpcProvider | null>(null);
     const [signer, setSigner] = useState<ethers.Signer | null>(null);
     const [tokenContract, setTokenContract] = useState<ethers.Contract | null>(null);
+    const [stakingContract, setStakingContract] = useState<ethers.Contract | null>(null);
+
 
     const connect = async () => {
         if (typeof window !== 'undefined' && window.ethereum) {
@@ -46,10 +52,16 @@ export const Web3Provider: React.FC<{ children: React.ReactNode}> = ({ children}
                 setIsConnected(true);
                 console.log('Connected to account:', accounts[0]);
 
-                // TODO: Add Token Contract Address
-                const tokenAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+                const tokenAddress = "0x9A676e781A523b5d0C0e43731313A708CB607508";
                 const token = new ethers.Contract(tokenAddress, TokenAbi['abi'], ethSigner);
                 setTokenContract(token);
+
+                const stakingAddress = "0x0b306bf915c4d645ff596e518faf3f9669b97016"
+                const staking = new ethers.Contract(stakingAddress, StakingAbi['abi'], ethSigner);
+                console.log('Token Contract:', token);
+                console.log('Staking Contract:', staking);
+
+                setStakingContract(staking);
 
             } catch (error) {
                 console.error("Error connecting to wallet:", error);
@@ -71,11 +83,18 @@ export const Web3Provider: React.FC<{ children: React.ReactNode}> = ({ children}
                 // TODO: Add Token Contract Address
                 const tokenAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
                 const token = new ethers.Contract(tokenAddress, TokenAbi['abi'], ethSigner);
+                console.log('Token Contract:', token);
                 setTokenContract(token);
+
+                const stakingAddress = "0x0b306bf915c4d645ff596e518faf3f9669b97016"
+                const staking = new ethers.Contract(stakingAddress, StakingAbi['abi'], ethSigner);
+                console.log('Staking Contract:', staking);
+
+                setStakingContract(staking);
             } catch (error) {
                 console.error("Error connecting to local network:", error);
                 alert('Could not connect to local network. Please install MetaMask or another Ethereum Wallet.');
-            }
+            } 
         }
     };
 
@@ -85,6 +104,8 @@ export const Web3Provider: React.FC<{ children: React.ReactNode}> = ({ children}
         setProvider(null);
         setSigner(null);
         setTokenContract(null);
+        setStakingContract(null);
+
     };
 
     return (
@@ -96,6 +117,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode}> = ({ children}
             provider,
             signer,
             tokenContract,
+            stakingContract,
         }}>
             {children}
         </Web3Context.Provider>
