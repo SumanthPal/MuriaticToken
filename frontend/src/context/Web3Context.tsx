@@ -52,11 +52,11 @@ export const Web3Provider: React.FC<{ children: React.ReactNode}> = ({ children}
                 setIsConnected(true);
                 console.log('Connected to account:', accounts[0]);
 
-                const tokenAddress = "0x9A676e781A523b5d0C0e43731313A708CB607508";
+                const tokenAddress = "0x47470b9a7b5D6f4f306D751dCf3632f4f37B9d44";
                 const token = new ethers.Contract(tokenAddress, TokenAbi['abi'], ethSigner);
                 setTokenContract(token);
 
-                const stakingAddress = "0x0b306bf915c4d645ff596e518faf3f9669b97016"
+                const stakingAddress = "0xF680fEFf333C21704eD17E90EaD0549E849bBD8E"
                 const staking = new ethers.Contract(stakingAddress, StakingAbi['abi'], ethSigner);
                 console.log('Token Contract:', token);
                 console.log('Staking Contract:', staking);
