@@ -55,6 +55,7 @@ const TokenInfo: React.FC = () => {
                 <p className="text-sm text-gray-400 mt-4">
                     Account: {account?.substring(0, 6)}...{account?.substring(account!.length - 4)}
                 </p>
+                
             </div>
         </div>
     );

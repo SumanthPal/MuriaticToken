@@ -6,8 +6,8 @@ import { useWeb3 } from '@/context/Web3Context';
 
 const StakingPanel: React.FC = () => {
   const { balance, symbol } = useToken();
-  const { stakedBalance, rewards, stake, unstake, claimRewards, isLoading, refresh } = useStaking();
-  const { account, isConnected } = useWeb3();
+  const { stakedBalance, rewards, stake, unstake, claimRewards, isLoading } = useStaking();
+  const { isConnected } = useWeb3();
   
   const [stakeAmount, setStakeAmount] = useState<string>('');
   const [unstakeAmount, setUnstakeAmount] = useState<string>('');
@@ -33,6 +33,56 @@ const StakingPanel: React.FC = () => {
       minimumFractionDigits: 2,
       maximumFractionDigits: 6
     });
+  };
+
+  const handleStake = async () => {
+    if (!stakeAmount || parseFloat(stakeAmount) <= 0) return;
+
+    setTxPending(true);
+    try {
+      await stake(stakeAmount);
+      setMessage('Staking successful!');
+      setMessageType('success');
+    } catch (error) {
+      setMessage('Staking failed. Please try again.');
+      setMessageType('error');
+    } finally {
+      setTxPending(false);
+      setStakeAmount('');
+    }
+  };
+
+  const handleUnstake = async () => {
+    if (!unstakeAmount || parseFloat(unstakeAmount) <= 0) return;
+
+    setTxPending(true);
+    try {
+      await unstake(unstakeAmount);
+      setMessage('Unstaking successful!');
+      setMessageType('success');
+    } catch (error) {
+      setMessage('Unstaking failed. Please try again.');
+      setMessageType('error');
+    } finally {
+      setTxPending(false);
+      setUnstakeAmount('');
+    }
+  };
+
+  const handleClaimRewards = async () => {
+    if (parseFloat(rewards) <= 0) return;
+
+    setTxPending(true);
+    try {
+      await claimRewards();
+      setMessage('Rewards claimed successfully!');
+      setMessageType('success');
+    } catch (error) {
+      setMessage('Failed to claim rewards. Please try again.');
+      setMessageType('error');
+    } finally {
+      setTxPending(false);
+    }
   };
 
   if (!isConnected) {
@@ -93,7 +143,7 @@ const StakingPanel: React.FC = () => {
             Max
           </button>
           <button
-            onClick={() => stake(stakeAmount)}
+            onClick={handleStake}
             className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 disabled:bg-purple-300"
             disabled={!stakeAmount || parseFloat(stakeAmount) <= 0 || txPending}
           >
@@ -121,7 +171,7 @@ const StakingPanel: React.FC = () => {
             Max
           </button>
           <button
-            onClick={() => unstake(unstakeAmount)}
+            onClick={handleUnstake}
             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:bg-red-300"
             disabled={!unstakeAmount || parseFloat(unstakeAmount) <= 0 || txPending}
           >
@@ -132,7 +182,7 @@ const StakingPanel: React.FC = () => {
       
       <div className="mb-6 text-center">
         <button
-          onClick={() => claimRewards()}
+          onClick={handleClaimRewards}
           className="px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-blue-300 w-full"
           disabled={parseFloat(rewards) <= 0 || txPending}
         >
